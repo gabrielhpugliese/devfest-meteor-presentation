@@ -97,7 +97,6 @@ body {
 }
 
 .slides.template-default > article:not(.nobackground):not(.biglogo) {
-  background: url(images/cube_cortado.png) 720px 620px no-repeat;
   background-size: 159px 65px;
   
   background-color: white;  
