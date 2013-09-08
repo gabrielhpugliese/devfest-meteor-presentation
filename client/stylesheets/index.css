@@ -1,0 +1,10 @@
+
+li {
+    font-size: 25px;
+    
+    .bolder {
+        font-size: 30px;
+        font-weight: 700;
+        color: #000;
+    }
+}
