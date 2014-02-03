@@ -2,7 +2,7 @@
   
   <section class='slides layout-regular template-default'>
     <article>
-      <h1> Meteor </h1>
+      <h1> Dicas de Meteor </h1>
       <img style="float: right; height: 35%; " src="images/meteor-animated.gif" />
       <br>
       <p>
@@ -47,82 +47,129 @@
       <h3>Exemplos</h3>
       <ul>
         <li><b>Meteor.com:</b> Próprio site do Meteor</li>
-        <img style="border: 1px solid; width: 100%;" class="centered" src="images/telescope_demo.png" />
+        <li><b>CodersTV:</b> Plataforma de conteúdo em vídeo para desenvolvedores.</li>
+        <li><b>Futuro site da Engarte:</b> Plataforma social para engenheiros e arquitetos.</li>
+        <li><b>Discover Meteor:</b> Site-livro feito pelo co-criador do Meteor.</li>
+        <li><b>Made With:</b> Sites e apps feitos pela comunidade de Meteor.</li>
       </ul>
     </article>
       
     <article>
-      <h3>Exemplos</h3>
+      <h1>
+        Algumas dicas para facilitar a vida! 
+      </h1>
+    </article>
+    
+    <article>
+      <h1>
+        Template
+      </h1>
+    </article>
+
+    <article>
+      <h3>Template</h3>
+      <section>
+{{#markdown}}
+```html
+<template name="myTemplate">
+\{{myFunc}}
+\{{#each listOfBooks}}
+  \{{info.someinfo}}
+  <button>Click here</button>
+\{{/each}}
+\{{> myOtherTemplate}}
+\{{#with myBlockHelper}}
+  \{{this.title}}: \{{this.author}}
+\{{/with}}
+</template>
+```
+{{/markdown}}
+      </section>
+
+    <ul>
+      <li>Separe seu HTML em templates menores para facilitar a manutenção.</li>
+      <li>Se precisar de um helper em diferentes templates, registre ele (está mais pra frente).</li>
+    </ul>
+    </article>
+    
+    <article>
+      <h3>Template helpers</h3>
+      <section>
+{{#markdown}}
+```javascript
+Template['myTemplate'].helpers({
+  myFunc: function () {
+    var allDivs = this.findAll('div');
+    var someId = this.find('#id');
+    $(allDivs).myjQueryPlugin();
+
+    return [1,2,3];
+  },
+  myBlockHelper: function () {
+    return Books.findOne();
+  },
+  listOfBooks: function () {
+    return Books.find();
+  }
+});
+```
+{{/markdown}}
+      </section>
       <ul>
-        <li><b>Discover Meteor:</b> Site-livro feito pelo co-criador do Meteor.</li>
-        <img style="border: 1px solid; width: 100%;" class="centered" src="images/telescope_demo.png" />
+        <li>Use os seletores do template ao invés dos seletores do document.</li>
       </ul>
     </article>
-    
+
     <article>
-      <h3>Exemplos</h3>
+      <h3>Template events</h3>
+        <section>
+{{#markdown}}        
+```javascript
+Template.myTemplate.events({
+  'click button': function (event, template) {
+    event.preventDefault();
+    doSomething();
+    console.log(this._id);
+  }
+});
+```
+{{/markdown}}
+        </section>
       <ul>
-        <li><b>CodersTV:</b> Plataforma de conteúdo em vídeo para desenvolvedores.</li>
-        <img style="border: 1px solid; width: 100%;" class="centered" src="images/friendtrumps.png" />
+        <li>Use os seletores do template ao invés dos seletores do document.</li>
+        <li>Utilize o contexto do evento para pegar informações do elemento.</li>
       </ul>
     </article>
-    
+
     <article>
-      <h3>Exemplos</h3>
-      <ul>
-        <li><b>Made With:</b> Sites feitos pela comunidade de Meteor.</li>
-        <img style="border: 1px solid; width: 100%;" class="centered" src="images/telescope_demo.png" />
-      </ul>
+      <h3>Handlebars.registerHelper</h3>
+      <section>
+{{#markdown}}
+```javascript
+Handlebars.registerHelper('myGlobalHelper', function () {
+  return Meteor.userId() || Meteor.uuid();
+});
+
+// Example from meteor-marked
+// Must use like a block helper
+Handlebars.registerHelper('markdown', function (options) {
+  return marked(options.fn(this));
+});
+```
+{{/markdown}}
+      </section>
     </article>
     
     <article>
-      <h1>Objetivo</h1>
-      <p>
-        Aprender Meteor copiando a tela de propostas do bonoevento
-      </p>
+      <h1>
+        Segurança e Validação
+      </h1>
     </article>
-    
+
     <article>
-      <h1>Cold Start</h1>
-      <p>
-        Criando e rodando um projeto na linha de comando (Linux)
-      </p>
-    </article>
-    
-    <article>
-      <h3>Conceitos básicos</h3>
-      <ul>
-        <li>Meteor: funções e atributos</li>
-        <li>Template Helpers</li>
-        <li>Template Events</li>
-        <li>Handlebars</li>
-        <li>Código do servidor (Node.js + Fibers): não é como <i>async callbacks</i> mas thread única por request</li>
-        <li>Código do cliente: empacotado e minificado (em produção)</li>
-      </ul>
-    </article>
-    
-    <article>
-      <h3>Linha de comando</h3>
-      <ul>
-        <li>meteor create</li>
-        <li>meteor run</li>
-        <li>
-          meteor add <i>package</i>
-          <ul>
-            <li>jquery</li>
-            <li>bootstrap</li>
-            <li>underscore</li>
-            <li>coffeescript</li>
-            <li><b>accounts-ui</b></li>
-          </ul>
-        </li>
-        
-      </ul>
-    </article>
-    
-    <article>
-      <h1>Hands-on</h1>
-      <p>Let's cook!</p>
+      <h1>
+        Mongo
+      </h1>
     </article>
     
     <article>
