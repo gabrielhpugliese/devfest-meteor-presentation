@@ -1,5 +1,4 @@
 <body>
-  
   <section class='slides layout-regular template-default'>
     <article>
       <h1> Dicas de Meteor </h1>
@@ -44,14 +43,41 @@
     </article>
     
     <article>
-      <h3>Exemplos</h3>
-      <ul>
-        <li><b>Meteor.com:</b> Próprio site do Meteor</li>
-        <li><b>CodersTV:</b> Plataforma de conteúdo em vídeo para desenvolvedores.</li>
-        <li><b>Futuro site da Engarte:</b> Plataforma social para engenheiros e arquitetos.</li>
-        <li><b>Discover Meteor:</b> Site-livro feito pelo co-criador do Meteor.</li>
-        <li><b>Made With:</b> Sites e apps feitos pela comunidade de Meteor.</li>
-      </ul>
+      <h3>Exemplos - Meteor.com</h3>
+      {{#constant}}
+        <iframe src="http://meteor.com/" seamless="seamless" frameborder="0"></iframe>
+      {{/constant}}
+    </article>
+
+    <article>
+        <h3>CodersTV</h3>
+        {{#constant}}
+          <iframe src="http://coderstv.com/"  seamless="seamless" frameborder="0"></iframe>
+        {{/constant}}
+    </article>
+    <article>
+        <h3></h3>
+        {{#constant}}
+          <iframe src="http://engarte-campus.meteor.com/"  seamless="seamless" frameborder="0"></iframe>
+        {{/constant}}
+    </article>
+    <article>
+        <h3></h3>
+        {{#constant}}
+          <iframe src="http://sedimently.com/"  seamless="seamless" frameborder="0"></iframe>
+        {{/constant}}
+    </article>
+    <article>
+        <h3></h3>
+        {{#constant}}
+          <iframe src="https://www.discovermeteor.com/"  seamless="seamless" frameborder="0"></iframe>
+        {{/constant}}
+    </article>
+    <article>
+        <h3></h3>
+        {{#constant}}
+          <iframe src="http://madewith.meteor.com/" seamless="seamless" frameborder="0"></iframe>
+        {{/constant}}
     </article>
       
     <article>
@@ -167,26 +193,182 @@ Handlebars.registerHelper('markdown', function (options) {
     </article>
 
     <article>
+      <h3>Regras Allow/Deny</h3>
+      <section>
+{{#markdown}}
+```javascript
+Books.allow({
+  insert: function (userId, doc) {
+    return userId && doc.ownerId === userId;
+  }
+});
+
+// Or
+Books.deny({
+  insert: function (userId, doc) {
+    return userId && doc.ownerId !== userId;
+  }
+})
+```
+{{/markdown}} 
+      </section>
+      <ul>
+        <li>Usar esse método para validação client ou server side.</li>
+        <li>Não esquecer de tirar o pacote insecure.</li>
+      </ul>
+    </article>
+
+    <article>
+      <h3>Função check()</h3>
+      <section>
+{{#markdown}} 
+```javascript
+Meteor.methods({
+  insertBook: function (title, author, year) {
+    check(title, String);
+    check(author, String);
+    check(year, Number);
+
+    // do your stuff
+  }
+});
+
+// In an object
+var pat = { name: Match.Optional(String)  };
+check({ name: "something"  }, pat) // OK
+check({}, pat) // OK
+check({ name: undefined  }, pat) // Throws an exception
+
+// Outside an object
+check(undefined, Match.Optional(String)); // OK
+```
+{{/markdown}} 
+      </section>
+    </article>
+
+    <article>
+      <h3>Função check()</h3>
+      <ul>
+        <li>Sempre em server-side.</li>
+        <li>Pode ser dentro de publications também.</li>
+        <li>Se algum parâmetro for Object, pode checar um pattern.</li>
+      </ul>
+    </article>
+
+    <article>
       <h1>
-        Mongo
+        Pacotes úteis
       </h1>
+    </article>
+
+    <article>
+      <h3>npm</h3>
+      <section>
+{{#markdown}}
+```javascript
+var 
+  googleapis = Meteor.require('googleapis'),
+  Twit = Meteor.require('twit')
+;
+```
+{{/markdown}}
+      </section>
+      <section>
+{{#markdown}}
+```javascript
+// packages.json
+{
+  "googleapis": "0.2.12-alpha",
+  "twit": "1.1.8"
+}
+```
+{{/markdown}}
+      </section>
+    </article>
+
+    <article>
+      <h3>collection-hooks</h3>
+      <section>
+{{#markdown}}
+```javascript
+Fiber = Npm.require('fibers'); 
+
+function sendFollowEmail (userId, doc) {
+  var followers = Followers.find({ coderId: doc.owner }).fetch();
+
+  _.each(followers, function (follower) {
+    Fiber(function () {
+      Email.send({/* all params of email.send */});
+    }).run();
+  });
+}
+
+Channels.after.insert(function (userId, doc) {
+  sendFollowEmail(userId, doc);
+});
+```
+{{/markdown}}
+      </section>
+    </article>
+
+    <article>
+      <h3>iron-router</h3>
+      <section>
+{{#markdown}} 
+```javascript
+Router.map(function () {
+  this.route('index', {
+    layoutTemplate: 'indexLayout',
+    path: '/',
+    waitOn: function () {
+      return [
+        Meteor.subscribe('Channels'),
+        Meteor.subscribe('Languages')
+      ]
+    },
+    before: function () {
+      document.title = 'Watch programming videos or broadcast'
+        + 'your coder skills with the world | CodersTV';
+    }  
+  });
+});
+```
+{{/markdown}} 
+      </section>
+    </article>
+
+    <article>
+      <h3>meteor-boilerplate (não é um pacote :P)</h3>
+      <ul>
+        <li>Comprehensive folder structure</li>
+        <li>TDD / BDD with laika</li>
+        <li>Multi page apps with iron-router</li>
+        <li>A way to load fixtures (as of now no external packages used for that)</li>
+        <li>meteor-boilerplate console tool, which helps on creating views, routes and so on</li>
+      </ul>
+      <section>
+{{#markdown}}
+```bash
+> ./meteor-boilerplate create:view index
+Successfully created a view called "index"
+
+> ./meteor-boilerplate create:model Books
+Successfully created a model called "Books" 
+(with files in model, client/subscriptions and server/publications)
+```
+{{/markdown}}
+      </section>
     </article>
     
     <article>
       <h2>Obrigado</h2>
+      <p>
+        Gabriel Pugliese
+      </p>
       <ul>
-        <li>
-          <a target="_blank" href="http://docs.meteor.com">meteor.com</a>
-        </li>
-        <li>
-          <a target="_blank" href="https://www.friendtrumps.com">friendtrumps.com</a>
-        </li>
-        <li>
-          <a target="_blank" href="http://telesc.pe/">telesc.pe</a>
-        </li>
-        <li>
-          <a target="_blank" href="http://www.eventedmind.com/">eventedmind.com</a> - Vídeos avançados
-        </li>
+          <li><i class="fa fa-twitter-square"></i> <a href="https://twitter.com/gabrielsapo" target="_blank"> @gabrielsapo</a></li>
+          <li><i class="fa fa-google-plus-square"></i> <a href="https://plus.google.com/+GabrielPugliese" target="_blank">+gabrielpugliese</a></li>
+          <li><i class="fa fa-github-square"></i> <a href="https://github.com/gabrielhpugliese" target="_blank">gabrielhpugliese</a></li>
       </ul>
     </article>
   </section>
