@@ -20,25 +20,25 @@
       <img style="float: right; height: 35%; " src="images/meteor.png" />
       <ul>
         <li>
-          <span class="bolder">Data on the Wire:</span> Não enviar HTML pela rede. Enviar dados.
+          <span class="bullets">Data on the Wire:</span> Não enviar HTML pela rede. Enviar dados.
         </li>
         <li>
-          <span class="bolder">One Language:</span> Escrever Javascript no cliente e no servidor. 
+          <span class="bullets">One Language:</span> Escrever Javascript no cliente e no servidor. 
         </li>
         <li>
-          <span class="bolder">Database Everywhere:</span> Usar a mesma API para acessar o banco de dados no cliente e no servidor.
+          <span class="bullets">Database Everywhere:</span> Usar a mesma API para acessar o banco de dados no cliente e no servidor.
         </li>
         <li>
-          <span class="bolder">Latency Compensation:</span> Usar <i>prefetching</i> e simulação de modelo para emular latência zero
+          <span class="bullets">Latency Compensation:</span> Usar <i>prefetching</i> e simulação de modelo para emular latência zero
         </li>
         <li>
-          <span class="bolder">Full Stack Reactivity:</span> Tempo-real no site é padrão.
+          <span class="bullets">Full Stack Reactivity:</span> Tempo-real no site é padrão.
         </li>
         <li>
-          <span class="bolder">Embrace the Ecosystem:</span> Ser <i>open source</i> e integrar com outras ferramentas open source.
+          <span class="bullets">Embrace the Ecosystem:</span> Ser <i>open source</i> e integrar com outras ferramentas open source.
         </li>
         <li>
-          <span class="bolder">Simplicity Equals Productivity:</span> A melhor maneira de parecer simples é ser simples.
+          <span class="bullets">Simplicity Equals Productivity:</span> A melhor maneira de parecer simples é ser simples.
         </li>
       </ul>
     </article>
@@ -192,6 +192,9 @@ Handlebars.registerHelper('markdown', function (options) {
 ```
 {{/markdown}}
       </section>
+      <ul>
+        <li>Se for repetir um helper em vários templates, talvez seja uma boa idéia registrar um global.</li>
+      </ul>
     </article>
     
     <article class="fill">
@@ -217,7 +220,7 @@ Books.deny({
   insert: function (userId, doc) {
     return userId && doc.ownerId !== userId;
   }
-})
+});
 ```
 {{/markdown}} 
       </section>
@@ -294,6 +297,42 @@ var
 ```
 {{/markdown}}
       </section>
+    </article>
+
+    <article class="smaller">
+      <h3>npm - Async utilities</h3>
+      <section>
+{{#markdown}} 
+```javascript
+if (Meteor.isClient) {
+  getGists = function getGists(user, callback) {
+    Meteor.call('getGists', user, callback);
+  }
+}
+
+if (Meteor.isServer) {
+  var GithubApi = Meteor.require('github');
+
+  Meteor.methods({
+    'getGists': function getGists(user) {
+      var github = new GithubApi({ version: "3.0.0" });
+      var gists = Async.runSync(function(done) {
+        github.gists.getFromUser({user: 'arunoda'}, function(err, data) {
+          done(null, data);
+        });
+      });
+
+      return gists.result;
+    }
+  });
+}
+```
+{{/markdown}} 
+      </section>
+
+      <ul>
+        <li>Só vai funcionar os pacotes do npm se usar o Async.runSync.</li>
+      </ul>
     </article>
 
     <article>
